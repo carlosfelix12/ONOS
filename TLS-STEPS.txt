@@ -1,7 +1,8 @@
 1-GERAR CHAVE CERTIFICAD NO DIRETORIO APACHE DO CONTAINER DE CADA NODO
 
 keytool -genkey -alias teastoressl -keyalg RSA -keysize 2048 -validity 360 -keystore "/root/onos/apache-karaf-4.2.8/etc/rc.keystore" -ext SAN=dns:onos1,ip:192.168.5.145
-
+keytool -genkey -alias teastoressl -keyalg RSA -keysize 2048 -validity 360 -keystore "/root/onos/apache-karaf-4.2.8/etc/rc.keystore" -ext SAN=dns:onos2,ip:192.168.5.146
+keytool -genkey -alias teastoressl -keyalg RSA -keysize 2048 -validity 360 -keystore "/root/onos/apache-karaf-4.2.8/etc/rc.keystore" -ext SAN=dns:onos3,ip:192.168.5.150
 
 2-ALTERAR FICHEIRO org.ops4j.pax.web.cfg
 
