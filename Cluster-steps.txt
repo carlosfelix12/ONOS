@@ -45,9 +45,9 @@ docker container start atomix-2
 docker container start atomix-3
 
 Passo 6
-docker run -t -d -p 80:8181 -p 8101:8101 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos1 --hostname onos1 --net onos --ip 172.20.0.20 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2" onosproject/onos:2.2.2
-docker run -t -d -p 80:8181 -p 8101:8101 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos2 --hostname onos2 --net onos --ip 172.20.0.21 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2" onosproject/onos:2.2.2
-docker run -t -d -p 80:8181 -p 8101:8101 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos3 --hostname onos3 --net onos --ip 172.20.0.22 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2" onosproject/onos:2.2.2
+docker run -t -d -p 80:8181 -p 8101:8101 -p 8443:8443 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos1 --hostname onos1 --net onos --ip 172.20.0.20 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2" onosproject/onos:2.2.2
+docker run -t -d -p 80:8181 -p 8101:8101 -p 8443:8443 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos2 --hostname onos2 --net onos --ip 172.20.0.21 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2" onosproject/onos:2.2.2
+docker run -t -d -p 80:8181 -p 8101:8101 -p 8443:8443 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos3 --hostname onos3 --net onos --ip 172.20.0.22 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2" onosproject/onos:2.2.2
 
 Passo 7-Criar diretorio config nas instancias de nodo onos
 docker exec onos1 mkdir /root/onos/config
