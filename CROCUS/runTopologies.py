@@ -28,7 +28,7 @@ c1 = RemoteController( 'c1', ip='10.3.3.219', port=6653 )
 c2 = RemoteController( 'c2', ip='10.3.3.220', port=6653 )
 bwLinkHosts=1000 #consider 1Gbps
 bwLinkSwitches=1000     # consider 10Gbps   NOW WITH 1Gbps
-nFailures=2
+nFailures=1
 timeFailure = 10 #random.randint(30,60) # failure between 30 and 60
 timeBetweenFailues = 2 #random.randint(0,2) # failure bellow 2s  
 idHostsFail =  [0,1,2,3,4,5]  # the first hosts failing
