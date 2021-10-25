@@ -67,15 +67,14 @@ def doFailure( hosts):
         if(dif>=timeFailure ):
             nfail+=1
             tBegin=time.time()
-            print("failure=" + str(nfail) + " host=" + str(i) + " " + str(tNow) + " " + str(dif) + " " + str(tNow - tBegin ))            
             for h in hosts:
                 if i in idHostsFail:
                     #Fail host
-                    h.stop()
+                    h.stop(deleteIntfs =True) # Stop and delete interfaces
+                    print("failure=" + str(nfail) + " host=" + str(i) + " " + str(tNow) + " " + str(dif) + " " + str(tNow - tBegin ))            
                     time.sleep(timeBetweenFailues)
                 i+=1
-            
-        
+
     print('Ending failures')
 
 
@@ -152,18 +151,16 @@ if __name__ == '__main__':
         opt = int(sys.argv[1])
         print(opt)
         if opt == 0:
-            linear_topo(1,2)    
-            #tree_topo(1,2)
+            linear_topo(4,2) # GEANT    
         elif opt == 1:
-            #tree_topo(4,4)    
-            tree_topo(1,2)
+            tree_topo(4,4)    
         elif opt == 2:
             tree_topo(7,2)
         elif opt == 3:
             linear_topo(100, 24)
         elif opt == 4:
-            #fatTree(12)
-            fatTree(2)
+            fatTree(12) # 12 pods
+            #fatTree(2)
         else:
             print('Wrong test ID')
     else:

@@ -15,7 +15,8 @@ while :
 do 
     curDate=`date +%s`
     echo "#########:$curDate" >> $FILE
-    ss -i -m --oneline >> $FILE
+    #ss -i -m --oneline >> $FILE
+    ss -i -m -n -t -u --oneline >> $FILE
     sleep  $MEASUREFREQUENCY
 done
 
