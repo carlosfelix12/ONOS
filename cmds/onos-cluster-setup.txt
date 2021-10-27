@@ -1,0 +1,45 @@
+1. Docker Swarm SETUP
+
+Two machines: M1 (.219) M2(.220)
+
+M1$ docker swarm init
+
+This will start the swarm (copy the instruction for docker swarm join)
+
+M2$ docker swarm join .....
+
+
+
+2. ONOS CLUSTER SETUP
+
+M1$ docker network create -d overlay --attachable onos --subnet 172.20.0.0/16 --gateway 172.20.0.1
+
+M1$ docker create -t -p 5679:5679 --restart unless-stopped --name atomix-1 --hostname atomix-1 --net onos --ip 172.20.0.10 atomix/atomix:3.1.5
+M2$ docker create -t -p 5679:5679 --restart unless-stopped --name atomix-2 --hostname atomix-2 --net onos --ip 172.20.0.11 atomix/atomix:3.1.5
+
+export OC1=172.20.0.10
+export OC2=172.20.0.11
+
+M1$ ./onos/tools/test/bin/atomix-gen-config 172.20.0.10 Documents/onos-config-files/atomix-1.conf 172.20.0.10 172.20.0.11
+M2$ ./onos/tools/test/bin/atomix-gen-config 172.20.0.11 Documents/onos-config-files/atomix-2.conf 172.20.0.10 172.20.0.11
+
+M1$ docker cp Documents/onos-config-files/atomix-1.conf atomix-1:/opt/atomix/conf/atomix.conf
+M2$ docker cp Documents/onos-config-files/atomix-2.conf atomix-2:/opt/atomix/conf/atomix.conf
+
+M1$ docker container start atomix-1
+M21$ docker container start atomix-2
+
+M1$ docker run -t -d -p 80:8181 -p 8101:8101 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos1 --hostname onos1 --net onos --ip 172.20.0.20 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2,pax-jdbc-postgresql" onosproject/onos:2.2.2
+M2$ docker run -t -d -p 80:8181 -p 8101:8101 -p 6653:6653 -p 6633:6633 -p 5005:5005 -p 830:830 --restart unless-stopped --name onos2 --hostname onos2 --net onos --ip 172.20.0.21 -e ONOS_APPS="drivers,openflow,lldpprovider,proxyarp,fwd,gui2,pax-jdbc-postgresql" onosproject/onos:2.2.2
+
+M1$ ./onos/tools/test/bin/onos-gen-config 172.20.0.20 Documents/onos-config-files/cluster-1.json -n 172.20.0.10 172.20.0.11
+M2$ ./onos/tools/test/bin/onos-gen-config 172.20.0.21 Documents/onos-config-files/cluster-2.json -n 172.20.0.10 172.20.0.11
+
+M1$ docker exec onos1 mkdir /root/onos/config
+M2$ docker exec onos2 mkdir /root/onos/config
+
+M1$ docker cp Documents/onos-config-files/cluster-1.json onos1:/root/onos/config/cluster.json
+M2$ docker cp Documents/onos-config-files/cluster-2.json onos2:/root/onos/config/cluster.json
+
+M1$ docker restart onos1
+M2$ docker restart onos2

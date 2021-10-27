@@ -1,0 +1,12 @@
+Start by attaching a shell to the container running ONOS:
+
+M1$ docker exec -it onos1 /bin/bash
+M2$ docker exec -it onos2 /bin/bash
+
+Install openssh-server in the controller:
+
+$ apt update && apt install openssh-server iproute2 vim -y
+
+Connect to the cli using the following command:
+
+$ ssh -p 8101 -o StrictHostKeyChecking=no karaf@localhost
