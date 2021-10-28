@@ -21,7 +21,7 @@ pkill -9 -f dumpcap
 #mv "/tmp/tshark-$HOST-$NAME.pcap" "/$DIR/tshark-$HOST-$NAME.pcap"
 #chown admin:admin -R "$DIR"
 
-/usr/bin/docker cp $CONTAINER:/root/onos/apache-karaf-4.2.8/data/decanter/appender.csv "$DIRME/decanter-$HOST-$NAME-zend.csv"
+/usr/bin/docker cp $CONTAINER:/root/onos/apache-karaf-4.2.8/data/decanter/appender.csv "$DIRME/decanter-$HOST-$CONTAINER-$NAME-zend.csv"
 
 pkill -9 -f "bash -s $NAME $CONTAINER"
 pkill -9 -f "sshd: root"

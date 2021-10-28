@@ -12,7 +12,7 @@ sudo mn -c
 
 from mininet.link import TCLink
 from mininet.net import Mininet
-from mininet.node import Controller, RemoteController, OVSSwitch
+from mininet.node import Controller, RemoteController, OVSSwitch, OVSController
 from mininet.topo import LinearTopo, Topo
 from mininet.clean import cleanup
 from mininet.log import info, output, warn, setLogLevel
@@ -22,6 +22,7 @@ import random
 from myClasses.MyTreeTopo import MyTreeTopo
 from myClasses.MyFatTree import MyFatTree
 from myClasses.MyLinearTopo import MyLinearTopo
+from myClasses.MyTLSLinearTopo import MyTLSLinearTopo
 import sys
 
 c1 = RemoteController( 'c1', ip='10.3.1.203', port=6653 )
@@ -141,6 +142,62 @@ def fatTree(iK=12):
     except Exception:
         print('Error occurred')
 
+
+def linear_topo_TLS(iSwitches=2, iHosts=24):
+    print(' Linear topology with TLS switches='+ str(iSwitches) + ' hosts=' + str(iHosts) )
+    
+
+    try:
+        switchNum=0
+        nSwitch=0
+        #mytopo = MyTLSLinearTopo(k=iSwitches, n=iHosts, bwHosts=bwLinkHosts, bwSwitches=bwLinkHosts)
+        net = Mininet(switch=OVSSwitch, controller=OVSController, autoSetMacs=True, ipBase='192.168.1.0/16')
+        #net.addController(c1)
+
+        lastSwitch = None
+        if iHosts == 1:
+            genHostName = lambda i, j: 'h%s' % i
+        else:
+            genHostName = lambda i, j: 'h%ss%d' % ( j, i )
+
+        for i in range( 0, int(iSwitches) ):
+            # Add switch
+            switchNum += 1
+            switch = net.addSwitch( 's%s' % switchNum, protocols='OpenFlow13' )
+
+            # Add hosts to switch
+            for j in range( 0, int(iHosts) ):
+                host = net.addHost( genHostName( switchNum, j ) )
+                linkopts=dict(bw=bwLinkHosts)
+                net.addLink( host, switch, **linkopts )
+            # Connect switch to previous
+            if lastSwitch:
+                linkopts=dict(bw=bwLinkHosts)
+                net.addLink( switch, lastSwitch, **linkopts )
+            #switch.cmd(self.strCmd) # Set controller
+            lastSwitch = switch
+      
+        net.start()
+        for i in range( 1, int(iSwitches) +1 ):
+            swiNode=net.getNodeByName('s%s' % i)
+            swiName='s%s' % i 
+            print (swiName)
+            swiNode.cmd('ovs-vsctl set-controller '+ swiName +' ssl:10.3.1.203:6653')
+        #s2.cmd('ovs-vsctl set-controller s2 ssl:10.3.1.203:6653')
+        #s3.cmd('ovs-vsctl set-controller s3 ssl:10.3.1.203:6653')
+        #s4.cmd('ovs-vsctl set-controller s4 ssl:10.3.1.203:6653')
+
+        net.pingAll()
+        #doFailure(net.hosts)
+        #time.sleep(1)
+        #net.pingAll()
+        time.sleep(5)
+        net.interact()
+        #net.stop()
+    except Exception as e:
+        print('Error occurred')
+        print (format(e))
+
 if __name__ == '__main__':
     setLogLevel( 'info' )
     cleanup()
@@ -148,7 +205,8 @@ if __name__ == '__main__':
         opt = int(sys.argv[1])
         print(opt)
         if opt == 0:
-            linear_topo(4,64) # GEANT, considering Pica8 capabilities # total of 256 hosts
+            linear_topo_TLS(4,64) 
+            #linear_topo(4,64) # GEANT, considering Pica8 capabilities # total of 256 hosts
         elif opt == 1:
             tree_topo(4,4)    
         elif opt == 2:
